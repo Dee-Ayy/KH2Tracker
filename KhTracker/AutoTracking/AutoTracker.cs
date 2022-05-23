@@ -119,6 +119,8 @@ namespace KhTracker
         private bool firstRun = true;
         private bool titleloaded = false;
 
+        public int TitleAddressPC = 0x714764;
+
         public void InitPCSX2Tracker(object sender, RoutedEventArgs e)
         {
             pcsx2tracking = true;
@@ -835,87 +837,92 @@ namespace KhTracker
         // This way level checks don't get misplaced 
         private void DetermineItemLocations()
         {
-            if (previousChecks.Count == 0)
-                return;
-
-            // Get rewards between previous level and current level
-            List<string> levelRewards = rewards.GetLevelRewards(stats.Weapon)
-                .Where(reward => reward.Item1 > stats.previousLevels[0] && reward.Item1 <= stats.Level)
-                .Select(reward => reward.Item2).ToList();
-            // Get drive rewards between previous level and current level
-            List<string> driveRewards = rewards.valorChecks
-                .Where(reward => reward.Item1 > valor.previousLevels[0] && reward.Item1 <= valor.Level)
-                .Select(reward => reward.Item2).ToList();
-            driveRewards.AddRange(rewards.wisdomChecks
-                .Where(reward => reward.Item1 > wisdom.previousLevels[0] && reward.Item1 <= wisdom.Level)
-                .Select(reward => reward.Item2));
-            driveRewards.AddRange(rewards.limitChecks
-                .Where(reward => reward.Item1 > limit.previousLevels[0] && reward.Item1 <= limit.Level)
-                .Select(reward => reward.Item2));
-            driveRewards.AddRange(rewards.masterChecks
-                .Where(reward => reward.Item1 > master.previousLevels[0] && reward.Item1 <= master.Level)
-                .Select(reward => reward.Item2));
-            driveRewards.AddRange(rewards.finalChecks
-                .Where(reward => reward.Item1 > final.previousLevels[0] && reward.Item1 <= final.Level)
-                .Select(reward => reward.Item2));
-
-            if (stats.Level > stats.previousLevels[0] && App.logger != null)
-                App.logger.Record("Levels " + stats.previousLevels[0].ToString() + " to " + stats.Level.ToString());
-            if (valor.Level > valor.previousLevels[0] && App.logger != null)
-                App.logger.Record("Valor Levels " + valor.previousLevels[0].ToString() + " to " + valor.Level.ToString());
-            if (wisdom.Level > wisdom.previousLevels[0] && App.logger != null)
-                App.logger.Record("Wisdom Levels " + wisdom.previousLevels[0].ToString() + " to " + wisdom.Level.ToString());
-            if (limit.Level > limit.previousLevels[0] && App.logger != null)
-                App.logger.Record("Limit Levels " + limit.previousLevels[0].ToString() + " to " + limit.Level.ToString());
-            if (master.Level > master.previousLevels[0] && App.logger != null)
-                App.logger.Record("Master Levels " + master.previousLevels[0].ToString() + " to " + master.Level.ToString());
-            if (final.Level > final.previousLevels[0] && App.logger != null)
-                App.logger.Record("Final Levels " + final.previousLevels[0].ToString() + " to " + final.Level.ToString());
-            foreach (string str in levelRewards)
+            bool _canTrack = memory.ReadMemory(TitleAddressPC, 1)[0] != 0x01 || pcsx2tracking;
+            
+            if (_canTrack)
             {
-                if (App.logger != null)
-                    App.logger.Record("Level reward " + str);
-            }
-            foreach (string str in driveRewards)
-            {
-                if (App.logger != null)
-                    App.logger.Record("Drive reward " + str);
-            }
+                if (previousChecks.Count == 0)
+                    return;
 
-            foreach (ImportantCheck check in previousChecks)
-            {
-                string count = "";
-                // remove magic and torn page count for comparison with item codes and readd to track specific ui copies
-                if (check.GetType() == typeof(Magic) || check.GetType() == typeof(TornPage))
+                // Get rewards between previous level and current level
+                List<string> levelRewards = rewards.GetLevelRewards(stats.Weapon)
+                    .Where(reward => reward.Item1 > stats.previousLevels[0] && reward.Item1 <= stats.Level)
+                    .Select(reward => reward.Item2).ToList();
+                // Get drive rewards between previous level and current level
+                List<string> driveRewards = rewards.valorChecks
+                    .Where(reward => reward.Item1 > valor.previousLevels[0] && reward.Item1 <= valor.Level)
+                    .Select(reward => reward.Item2).ToList();
+                driveRewards.AddRange(rewards.wisdomChecks
+                    .Where(reward => reward.Item1 > wisdom.previousLevels[0] && reward.Item1 <= wisdom.Level)
+                    .Select(reward => reward.Item2));
+                driveRewards.AddRange(rewards.limitChecks
+                    .Where(reward => reward.Item1 > limit.previousLevels[0] && reward.Item1 <= limit.Level)
+                    .Select(reward => reward.Item2));
+                driveRewards.AddRange(rewards.masterChecks
+                    .Where(reward => reward.Item1 > master.previousLevels[0] && reward.Item1 <= master.Level)
+                    .Select(reward => reward.Item2));
+                driveRewards.AddRange(rewards.finalChecks
+                    .Where(reward => reward.Item1 > final.previousLevels[0] && reward.Item1 <= final.Level)
+                    .Select(reward => reward.Item2));
+
+                if (stats.Level > stats.previousLevels[0] && App.logger != null)
+                    App.logger.Record("Levels " + stats.previousLevels[0].ToString() + " to " + stats.Level.ToString());
+                if (valor.Level > valor.previousLevels[0] && App.logger != null)
+                    App.logger.Record("Valor Levels " + valor.previousLevels[0].ToString() + " to " + valor.Level.ToString());
+                if (wisdom.Level > wisdom.previousLevels[0] && App.logger != null)
+                    App.logger.Record("Wisdom Levels " + wisdom.previousLevels[0].ToString() + " to " + wisdom.Level.ToString());
+                if (limit.Level > limit.previousLevels[0] && App.logger != null)
+                    App.logger.Record("Limit Levels " + limit.previousLevels[0].ToString() + " to " + limit.Level.ToString());
+                if (master.Level > master.previousLevels[0] && App.logger != null)
+                    App.logger.Record("Master Levels " + master.previousLevels[0].ToString() + " to " + master.Level.ToString());
+                if (final.Level > final.previousLevels[0] && App.logger != null)
+                    App.logger.Record("Final Levels " + final.previousLevels[0].ToString() + " to " + final.Level.ToString());
+                foreach (string str in levelRewards)
                 {
-                    count = check.Name.Substring(check.Name.Length - 1);
-                    check.Name = check.Name.Substring(0, check.Name.Length - 1);
+                    if (App.logger != null)
+                        App.logger.Record("Level reward " + str);
+                }
+                foreach (string str in driveRewards)
+                {
+                    if (App.logger != null)
+                        App.logger.Record("Drive reward " + str);
                 }
 
-                if (levelRewards.Exists(x => x == check.Name))
+                foreach (ImportantCheck check in previousChecks)
                 {
-                    // add check to levels
-                    TrackItem(check.Name + count, SorasHeartGrid);
-                    levelRewards.Remove(check.Name);
-                }
-                else if (driveRewards.Exists(x => x == check.Name))
-                {
-                    // add check to drives
-                    TrackItem(check.Name + count, DriveFormsGrid);
-                    driveRewards.Remove(check.Name);
-                }
-                else
-                {
-                    if(CheckSynthPuzzle(pcsx2tracking))
+                    string count = "";
+                    // remove magic and torn page count for comparison with item codes and readd to track specific ui copies
+                    if (check.GetType() == typeof(Magic) || check.GetType() == typeof(TornPage))
                     {
-                        TrackItem(check.Name + count, data.WorldsData["PuzzSynth"].worldGrid);
+                        count = check.Name.Substring(check.Name.Length - 1);
+                        check.Name = check.Name.Substring(0, check.Name.Length - 1);
+                    }
+
+                    if (levelRewards.Exists(x => x == check.Name))
+                    {
+                        // add check to levels
+                        TrackItem(check.Name + count, SorasHeartGrid);
+                        levelRewards.Remove(check.Name);
+                    }
+                    else if (driveRewards.Exists(x => x == check.Name))
+                    {
+                        // add check to drives
+                        TrackItem(check.Name + count, DriveFormsGrid);
+                        driveRewards.Remove(check.Name);
                     }
                     else
                     {
-                        if (data.WorldsData.ContainsKey(world.previousworldName))
+                        if (CheckSynthPuzzle(pcsx2tracking))
                         {
-                            // add check to current world
-                            TrackItem(check.Name + count, data.WorldsData[world.previousworldName].worldGrid);
+                            TrackItem(check.Name + count, data.WorldsData["PuzzSynth"].worldGrid);
+                        }
+                        else
+                        {
+                            if (data.WorldsData.ContainsKey(world.previousworldName))
+                            {
+                                // add check to current world
+                                TrackItem(check.Name + count, data.WorldsData[world.previousworldName].worldGrid);
+                            }
                         }
                     }
                 }
