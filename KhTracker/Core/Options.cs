@@ -1531,7 +1531,6 @@ namespace KhTracker
             using (ZipArchive archive = ZipFile.OpenRead(filename))
             {
                 ZipArchiveEntry hintsfile = null;
-                ZipArchiveEntry hashfile = null;
                 ZipArchiveEntry enemyfile = null;
 
                 //get and temp store these files to grab data from later.
@@ -1541,10 +1540,6 @@ namespace KhTracker
                     if (entry.FullName.Equals("HintFile.Hints"))
                     {
                         hintsfile = entry;
-                    }
-                    if (entry.FullName.Equals("sys.yml"))
-                    {
-                        hashfile = entry;
                     }
                     if (entry.FullName.Equals("enemies.rando"))
                     {
@@ -1583,38 +1578,29 @@ namespace KhTracker
                     }
                 }
 
-                if (hashfile != null)
+                string[] hash = LoadSeedHash(archive);
+                if (hash != null)
                 {
-                    using (var reader2 = new StreamReader(hashfile.Open()))
+                    data.seedHashVisual = hash;
+
+                    //Set Icons
+                    HashIcon1.SetResourceReference(ContentProperty, hash[0]);
+                    HashIcon2.SetResourceReference(ContentProperty, hash[1]);
+                    HashIcon3.SetResourceReference(ContentProperty, hash[2]);
+                    HashIcon4.SetResourceReference(ContentProperty, hash[3]);
+                    HashIcon5.SetResourceReference(ContentProperty, hash[4]);
+                    HashIcon6.SetResourceReference(ContentProperty, hash[5]);
+                    HashIcon7.SetResourceReference(ContentProperty, hash[6]);
+                    data.SeedHashLoaded = true;
+
+                    //make visible
+                    if (SeedHashOption.IsChecked)
                     {
-                        string[] separatingStrings = { "- en: ", " ", "'", "{", "}", ":", "icon" };
-                        string text1 = reader2.ReadLine();
-                        string text2 = reader2.ReadLine();
-                        string text = text1 + text2;
-                        string[] hash = text.Split(separatingStrings, System.StringSplitOptions.RemoveEmptyEntries);
-                        data.seedHashVisual = hash;
-
-                        //Set Icons
-                        HashIcon1.SetResourceReference(ContentProperty, hash[0]);
-                        HashIcon2.SetResourceReference(ContentProperty, hash[1]);
-                        HashIcon3.SetResourceReference(ContentProperty, hash[2]);
-                        HashIcon4.SetResourceReference(ContentProperty, hash[3]);
-                        HashIcon5.SetResourceReference(ContentProperty, hash[4]);
-                        HashIcon6.SetResourceReference(ContentProperty, hash[5]);
-                        HashIcon7.SetResourceReference(ContentProperty, hash[6]);
-                        data.SeedHashLoaded = true;
-
-                        //make visible
-                        if (SeedHashOption.IsChecked)
-                        {
-                            SetHintText("");
-                            HashGrid.Visibility = Visibility.Visible;
-                        }
-
-                        HashToSeed(hash);
-
-                        reader2.Close();
+                        SetHintText("");
+                        HashGrid.Visibility = Visibility.Visible;
                     }
+
+                    HashToSeed(hash);
                 }
 
                 if (hintsfile != null)
@@ -2386,5 +2372,47 @@ namespace KhTracker
                         return "NumPad0";
             }
         }
+
+        private string[] LoadSeedHash(ZipArchive archive)
+        {
+            ZipArchiveEntry seedHashIconsFile = null;
+            foreach (var entry in archive.Entries)
+            {
+                if (entry.Name.Equals("randoseed-hash-icons.csv"))
+                {
+                    seedHashIconsFile = entry;
+                }
+            }
+
+            if (seedHashIconsFile != null)
+            {
+                using (var reader = new StreamReader(seedHashIconsFile.Open()))
+                {
+                    string[] separatingStrings = { "," };
+                    string text = reader.ReadToEnd();
+                    return text.Split(separatingStrings, System.StringSplitOptions.RemoveEmptyEntries);
+                }
+            }
+
+            // Keep the fallback loading of the seed hash from sys.yml around for at least awhile for
+            // compatibility with older seeds. This can probably be removed eventually. The way this
+            // was assuming the seed hash always at the top of the sys.yml was asking for trouble in
+            // the long term, so a new explicit seed hash icons file was added by the generator.
+            ZipArchiveEntry sysYmlFile = archive.GetEntry("sys.yml");
+            if (sysYmlFile != null)
+            {
+                using (var reader = new StreamReader(sysYmlFile.Open()))
+                {
+                    string[] separatingStrings = { "- en: ", " ", "'", "{", "}", ":", "icon" };
+                    string text1 = reader.ReadLine();
+                    string text2 = reader.ReadLine();
+                    string text = text1 + text2;
+                    return text.Split(separatingStrings, System.StringSplitOptions.RemoveEmptyEntries);
+                }
+            }
+
+            return null;
+        }
+
     }
 }
