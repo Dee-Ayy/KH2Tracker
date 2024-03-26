@@ -432,8 +432,8 @@ namespace KhTracker
             string testS = ReadMemString(system3, 3);
             string testB = ReadMemString(battle0, 3);
 
-            //Console.WriteLine("sys: " + testS);
-            //Console.WriteLine("btl: " + testB);
+            Console.WriteLine("sys: " + testS);
+            Console.WriteLine("btl: " + testB);
 
             if (testB == testS && testS == "BAR")
             {
@@ -442,7 +442,7 @@ namespace KhTracker
                 return true;
             }
 
-            //Console.WriteLine("Not yet");
+            Console.WriteLine("Not yet");
             return false;
         }
 
@@ -716,6 +716,15 @@ namespace KhTracker
 
             UpdateCollectedItems();
             DetermineItemLocations();
+
+            if (data.hasFailed)
+            {
+                aTimer.Stop();
+                Connect2.Source = data.AD_Error;
+                MessageBox.Show("Failed to load level reward data! \nRetry Autotracking or restart the Tracker.", "WARNING", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+            }
+                
+
         }
 
         private void UpdateGridTracker(string gridCheckName)
@@ -2107,13 +2116,6 @@ namespace KhTracker
                             collectedChecks.Add(check);
                             newChecks.Add(check);
                         }
-                    }
-                    else if (check.Name.StartsWith("MunnyPouch"))
-                    {
-                        munnyPouchCount++;
-                        check.Name = $"MunnyPouch{munnyPouchCount}";
-                        collectedChecks.Add(check);
-                        newChecks.Add(check);
                     }
                     else
                     {

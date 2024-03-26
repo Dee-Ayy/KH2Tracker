@@ -39,6 +39,7 @@ namespace KhTracker
         public int lastVersion = 0;
         public bool wasTracking = false;
         public Codes codes = new Codes();
+        public bool hasFailed = false;
 
         //Report stuff      
         public List<Tuple<string, string, int>> reportInformation = new List<Tuple<string, string, int>>();
@@ -68,6 +69,7 @@ namespace KhTracker
         public BitmapImage AD_PCred;
         public BitmapImage AD_PS2;
         public BitmapImage AD_Cross;
+        public BitmapImage AD_Error;
 
         //for points hints
         public Dictionary<string, Item> GhostItems = new Dictionary<string, Item>();

@@ -6,6 +6,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
+using System.Windows.Forms;
 using System.Windows.Markup;
 
 namespace KhTracker
@@ -23,8 +24,8 @@ namespace KhTracker
 
         public int ADDRESS_OFFSET;
         //int Bt10;
-        int Lvup;
-        int Fmlv;
+        int Lvup = 0;
+        int Fmlv = 0;
 
         MemoryReader memory;
 
@@ -33,8 +34,31 @@ namespace KhTracker
             ADDRESS_OFFSET = offset;
             memory = mem;
             //Bt10 = bt10;
-            Lvup = GetSubOffset(bt10, 5);
-            Fmlv = GetSubOffset(bt10, 16);
+
+            //Lvup = GetSubOffset(bt10, 5);
+            int tries = 0;
+            while (tries < 101 && Lvup == 0)
+            {
+                tries++;
+                Lvup = GetSubOffset(bt10, 5);
+            }
+            if (tries >= 100)
+            {
+                MainWindow.data.hasFailed = true;
+            }
+
+            //Fmlv = GetSubOffset(bt10, 16);
+            tries = 0;
+            while (tries < 101 && Fmlv == 0)
+            {
+                tries++;
+                Fmlv = GetSubOffset(bt10, 16);
+            }
+            if (tries >= 100)
+            {
+                MainWindow.data.hasFailed = true;
+            }
+
             swordChecks = new List<Tuple<int, string>>();
             shieldChecks = new List<Tuple<int, string>>();
             staffChecks = new List<Tuple<int, string>>();
