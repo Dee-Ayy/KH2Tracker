@@ -1683,6 +1683,11 @@ namespace KhTracker
                             updateProgression = false;
                             break;
                     }
+                    if (curProg == 0)
+                    {
+                        newProg = 1;
+                        updateProgression = true;
+                    }
                     break;
                 case "TwilightTown":
                     switch (wRoom)
@@ -1718,6 +1723,11 @@ namespace KhTracker
                         default:
                             updateProgression = false;
                             break;
+                    }
+                    if (curProg == 0)
+                    {
+                        newProg = 1;
+                        updateProgression = true;
                     }
                     break;
                 case "HollowBastion":
@@ -1857,6 +1867,11 @@ namespace KhTracker
                             updateProgression = false;
                             break;
                     }
+                    if (curProg == 0)
+                    {
+                        newProg = 1;
+                        updateProgression = true;
+                    }
                     break;
                 case "BeastsCastle":
                     switch (wRoom)
@@ -1901,6 +1916,11 @@ namespace KhTracker
                         default:
                             updateProgression = false;
                             break;
+                    }
+                    if (curProg == 0)
+                    {
+                        newProg = 1;
+                        updateProgression = true;
                     }
                     break;
                 case "OlympusColiseum":
@@ -1987,6 +2007,11 @@ namespace KhTracker
                             updateProgression = false;
                             break;
                     }
+                    if (curProg == 0)
+                    {
+                        newProg = 1;
+                        updateProgression = true;
+                    }
                     break;
                 case "Agrabah":
                     switch (wRoom)
@@ -2036,6 +2061,11 @@ namespace KhTracker
                         default:
                             updateProgression = false;
                             break;
+                    }
+                    if (curProg == 0)
+                    {
+                        newProg = 1;
+                        updateProgression = true;
                     }
                     break;
                 case "LandofDragons":
@@ -2138,6 +2168,11 @@ namespace KhTracker
                             updateProgression = false;
                             break;
                     }
+                    if (curProg == 0)
+                    {
+                        newProg = 1;
+                        updateProgression = true;
+                    }
                     break;
                 case "HundredAcreWood":
                     switch (wRoom)
@@ -2169,6 +2204,11 @@ namespace KhTracker
                         default:
                             updateProgression = false;
                             break;
+                    }
+                    if (curProg == 0)
+                    {
+                        newProg = 1;
+                        updateProgression = true;
                     }
                     break;
                 case "PrideLands":
@@ -2203,6 +2243,11 @@ namespace KhTracker
                             updateProgression = false;
                             break;
                     }
+                    if (curProg == 0)
+                    {
+                        newProg = 1;
+                        updateProgression = true;
+                    }
                     break;
                 case "Atlantica":
                     switch (wRoom)
@@ -2226,6 +2271,11 @@ namespace KhTracker
                         default:
                             updateProgression = false;
                             break;
+                    }
+                    if (curProg == 0)
+                    {
+                        newProg = 1;
+                        updateProgression = true;
                     }
                     break;
                 case "DisneyCastle":
@@ -2341,6 +2391,11 @@ namespace KhTracker
                             updateProgression = false;
                             break;
                     }
+                    if (curProg == 0)
+                    {
+                        newProg = 1;
+                        updateProgression = true;
+                    }
                     break;
                 case "HalloweenTown":
                     switch (wRoom)
@@ -2394,6 +2449,11 @@ namespace KhTracker
                         default:
                             updateProgression = false;
                             break;
+                    }
+                    if (curProg == 0)
+                    {
+                        newProg = 1;
+                        updateProgression = true;
                     }
                     break;
                 case "PortRoyal":
@@ -2450,6 +2510,11 @@ namespace KhTracker
                             updateProgression = false;
                             break;
                     }
+                    if (curProg == 0)
+                    {
+                        newProg = 1;
+                        updateProgression = true;
+                    }
                     break;
                 case "SpaceParanoids":
                     switch (wRoom)
@@ -2490,6 +2555,11 @@ namespace KhTracker
                         default:
                             updateProgression = false;
                             break;
+                    }
+                    if (curProg == 0)
+                    {
+                        newProg = 1;
+                        updateProgression = true;
                     }
                     break;
                 case "TWTNW":
@@ -2586,6 +2656,11 @@ namespace KhTracker
                         default:
                             updateProgression = false;
                             break;
+                    }
+                    if (curProg == 0)
+                    {
+                        newProg = 1;
+                        updateProgression = true;
                     }
                     break;
                 case "GoA":
