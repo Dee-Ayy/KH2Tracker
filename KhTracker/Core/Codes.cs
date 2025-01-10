@@ -1458,6 +1458,7 @@ namespace KhTracker
             {"Cloud", "Cloud"},
             {"Cloud (1)", "Cloud"},
             {"Cloud (2)", "Cloud"},
+            {"Jafar (Cloud)", "Cloud"},
             {"Dark Thorn", "DarkThorn"},
             {"Demyx", "HBDemyx"},
             {"Demyx (Data)", "DataDemyx"},
@@ -1476,6 +1477,7 @@ namespace KhTracker
             {"Hercules", "Hercules"},
             {"Hostile Program", "HostileProgram"},
             {"Hydra", "Hydra"},
+            {"Hydra (Hercules)", "Hercules"},
             {"Jafar", "GenieJafar"},
             {"Larxene", "Larxene"},
             {"Larxene (Data)", "LarxeneData"},
@@ -1513,8 +1515,10 @@ namespace KhTracker
             {"Sephiroth", "Sephiroth"},
             {"Setzer", "Setzer"},
             {"Shadow Stalker", "ShadowStalker"},
+            {"Shadow Stalker (Tifa)", "Tifa"},
             {"Shan-Yu", "ShanYu"},
             {"Storm Rider", "StormRider"},
+            {"Storm Rider (Yuffie)", "Yuffie"},
             {"Terra", "LingeringWill"},
             {"The Beast", "Beast"},
             {"The Experiment", "Experiment"},
@@ -1523,6 +1527,7 @@ namespace KhTracker
             {"Tifa (1)", "Tifa"},
             {"Tifa (2)", "Tifa"},
             {"Twilight Thorn", "TwilightThorn"},
+            {"Twilight Thorn (Leon)", "Leon"},
             {"Vexen", "Vexen"},
             {"Vexen (Data)", "VexenData"},
             {"Vivi", "Vivi"},
@@ -1549,6 +1554,15 @@ namespace KhTracker
             { "Hades", "Hades II (1)" },
             { "DCPete", "Pete TR" },
             { "OCPete", "Pete OC II" }
+        };
+
+        public Dictionary<string, string> oneHourReplacements = new Dictionary<string, string>()
+        {
+            { "Hydra", "Hercules" },
+            { "Jafar", "Cloud" },
+            { "Shadow Stalker", "Tifa" },
+            { "Storm Rider", "Yuffie" },
+            { "Twilight Thorn", "Leon" }
         };
     }
 }

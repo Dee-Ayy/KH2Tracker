@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using System.Windows.Markup;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
@@ -1049,6 +1050,17 @@ namespace KhTracker
         public void Handle_GridTrackerHints_BE(string gridOriginalBoss, string gridNewBoss, string iconStyle = "Min")
         {
 
+            Data data = MainWindow.data;
+
+            // handle 1 hour hinting: use the original boss image for arena hints
+            if (data.oneHourMode && data.codes.oneHourReplacements.ContainsValue(gridOriginalBoss))
+            {
+                var origBossKey = data.codes.oneHourReplacements
+                                    .FirstOrDefault(pair => pair.Value.Equals(gridOriginalBoss))
+                                    .Key;
+                gridOriginalBoss = data.codes.bossNameConversion[origBossKey];
+            }
+
             // get the hint color
             Color hintColor = window.gridWindow.currentColors["Hint Color"];
 
@@ -1112,54 +1124,58 @@ namespace KhTracker
         {
             Data data = MainWindow.data;
 
+            string originalBoss;
+            string middle;
+            string newBoss;
+
             if (data.BossHomeHinting)
             {
-                string text1 = data.HintRevealsStored[index].Item1;
-                string text2 = data.HintRevealsStored[index].Item2;
-                string text3 = data.HintRevealsStored[index].Item3;
+                originalBoss = data.HintRevealsStored[index].Item1;
+                middle = data.HintRevealsStored[index].Item2;
+                newBoss = data.HintRevealsStored[index].Item3;
 
                 //change names for these bosses only for 1hr mode
                 if (data.oneHourMode)
                 {
-                    if (text1.Contains("Cloud"))
+                    if (originalBoss.Contains("Cloud"))
                     {
-                        text1 = "Jafar (Cloud)";
+                        originalBoss = "Jafar (Cloud)";
                         //if (text2 == "is unchanged")
                         //{
                         //    text2 = "became";
                         //    text3 = "Cloud";
                         //}
                     }
-                    if (text1.Contains("Tifa"))
+                    if (originalBoss.Contains("Tifa"))
                     {
-                        text1 = "Shadow Stalker (Tifa)";
+                        originalBoss = "Shadow Stalker (Tifa)";
                         //if (text2 == "is unchanged")
                         //{
                         //    text2 = "became";
                         //    text3 = "Tifa";
                         //}
                     }
-                    if (text1.Contains("Hercules"))
+                    if (originalBoss.Contains("Hercules"))
                     {
-                        text1 = "Hydra (Hercules)";
+                        originalBoss = "Hydra (Hercules)";
                         //if (text2 == "is unchanged")
                         //{
                         //    text2 = "became";
                         //    text3 = "Hercules";
                         //}
                     }
-                    if (text1.Contains("Leon"))
+                    if (originalBoss.Contains("Leon"))
                     {
-                        text1 = "Twilight Thorn (Leon)";
+                        originalBoss = "Twilight Thorn (Leon)";
                         //if (text2 == "is unchanged")
                         //{
                         //    text2 = "became";
                         //    text3 = "Leon";
                         //}
                     }
-                    if (text1.Contains("Yuffie"))
+                    if (originalBoss.Contains("Yuffie"))
                     {
-                        text1 = "Storm Rider (Yuffie)";
+                        originalBoss = "Storm Rider (Yuffie)";
                         //if (text2 == "is unchanged")
                         //{
                         //    text2 = "became";
@@ -1167,18 +1183,20 @@ namespace KhTracker
                         //}
                     }
                 }
+                window.SetHintTextRow2(originalBoss, middle, newBoss);
+            }
+            
+            else
+            {
+                originalBoss = data.progBossInformation[index].Item1;
+                middle = data.progBossInformation[index].Item2;
+                newBoss = data.progBossInformation[index].Item3;
 
-                window.SetHintTextRow2(text1, text2, text3);
-                return;
-            }              
+                // hint text
+                window.SetHintTextRow2(originalBoss, middle, newBoss);
+                data.HintRevealsStored.Add(new Tuple<string, string, string, bool, bool, bool>(originalBoss, middle, newBoss, false, false, false));
+            }
 
-            string originalBoss = data.progBossInformation[index].Item1;
-            string middle = data.progBossInformation[index].Item2;
-            string newBoss = data.progBossInformation[index].Item3;
-
-            // hint text
-            window.SetHintTextRow2(originalBoss, middle, newBoss);
-            data.HintRevealsStored.Add(new Tuple<string, string, string, bool, bool, bool>(originalBoss, middle, newBoss, false, false, false));
 
             if (middle == "is unchanged")
             {
@@ -1201,8 +1219,26 @@ namespace KhTracker
 
                 // handle boss hint on grid tracker
                 Handle_GridTrackerHints_BE(gridOriginalBoss, gridNewBoss, window.gridWindow.TelevoIconsOption.IsChecked ? "Min" : "Old");
-            }
 
+                // handle boss hint home for data org members
+                if (data.BossRandoFound && window.gridWindow.bunterLogic)
+                {
+                    gridOriginalBoss = gridOriginalBoss.Replace("Data", "").Replace("Axel", "Axel II");
+
+                    if (data.BossList.ContainsKey(gridOriginalBoss)
+                        && data.codes.bossNameConversion.ContainsKey(data.BossList[gridOriginalBoss]))
+                    {
+                        gridNewBoss = data.codes.bossNameConversion[data.BossList[gridOriginalBoss]];
+                        Console.WriteLine($"{gridOriginalBoss}, {gridNewBoss}");
+
+                        Handle_GridTrackerHints_BE(
+                            gridOriginalBoss,
+                            gridNewBoss,
+                            window.gridWindow.TelevoIconsOption?.IsChecked == true ? "Min" : "Old"
+                        );
+                    }
+                }
+            }
 
         }
 

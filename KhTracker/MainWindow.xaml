@@ -12,7 +12,7 @@
         LocationChanged="Window_LocationChanged"
         SizeChanged="Window_SizeChanged"
         AllowDrop="True" Drop="DropFile"
-        Title="KH2 Tracker 2.6.5d" Height="1000" Width="600" Background="#303030"
+        Title="KH2 Tracker 2.6.5e" Height="1000" Width="600" Background="#303030"
         MinHeight="440" MinWidth="300">
 
     <Window.Resources>
